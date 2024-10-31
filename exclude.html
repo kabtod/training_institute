@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>إدارة الاستبعاد والاستقالة</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>إدارة الاستبعاد والاستقالة</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>الاسم</th>
+                <th>البريد الإلكتروني</th>
+                <th>الحالة</th>
+                <th>السبب</th>
+                <th>تحديث</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- هنا يتم جلب المتدربين من قاعدة البيانات -->
+            <tr>
+                <td>علي</td>
+                <td>ali@example.com</td>
+                <td>
+                    <form action="exclude.php" method="POST">
+                        <input type="hidden" name="trainee_id" value="2">
+                        <select name="status" class="form-control">
+                            <option value="مستبعد">استبعاد</option>
+                            <option value="مستقيل">استقالة</option>
+                        </select>
+                </td>
+                <td><input type="text" name="reason" class="form-control" required></td>
+                <td><button type="submit" class="btn btn-danger">تحديث</button></td>
+                    </form>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

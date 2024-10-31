@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>اعتماد المتدربين</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>اعتماد المتدربين</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>الاسم</th>
+                <th>البريد الإلكتروني</th>
+                <th>اعتماد</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- هنا يتم جلب المتدربين من قاعدة البيانات -->
+            <tr>
+                <td>أحمد</td>
+                <td>ahmed@example.com</td>
+                <td>
+                    <form action="approve.php" method="POST">
+                        <input type="hidden" name="trainee_id" value="1">
+                        <button type="submit" class="btn btn-success">اعتماد</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
