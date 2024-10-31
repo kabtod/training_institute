@@ -1,2 +1,2 @@
 # training_institute
-## HIDT 
+## HIDT TRAINING 
