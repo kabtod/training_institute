@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS companies (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL
 );
-
+--
 -- إدخال بيانات افتراضية للشركات
 INSERT INTO companies (name) VALUES 
 ('شركة ABC'),
