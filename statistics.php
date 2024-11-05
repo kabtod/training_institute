@@ -1,5 +1,6 @@
 <?php 
 include_once 'Trainee.php';
+include_once 'header.html';
 
 $trainee = new Trainee();
 
@@ -26,12 +27,7 @@ foreach ($excludedTrainees as $company) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إحصائيات المتدربين</title>
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-        }
+
 
         .container {
             width: 70%;

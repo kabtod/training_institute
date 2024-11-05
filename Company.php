@@ -11,9 +11,9 @@ class Company {
     // دالة للحصول على جميع الشركات
     public function getAllCompanies() {
         $query = "SELECT  id,name FROM companies"; // افترض وجود حقل company_name في جدول المتدربين
-      return  $stmt = $this->db->query($query);
+       return $stmt = $this->db->query($query);
         // $stmt->execute();
-        //  $stmt->fetchAll(PDO::FETCH_COLUMN);
+        //   $stmt->getresult();
     }
 
     // يمكنك إضافة دوال أخرى تخص الشركات هنا

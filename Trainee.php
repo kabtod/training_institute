@@ -1,6 +1,5 @@
 <?php 
 include_once 'Database.php';
-
 class Trainee {
     private $db;
 
@@ -9,11 +8,17 @@ class Trainee {
     }
 
     // دالة تسجيل متدرب
-    public function registerTrainee($name, $email, $company_id) {
-        $sql = "INSERT INTO trainees (name, email, company_id, status) VALUES (?, ?, ?, 'غير معتمد')";
-        $params = ["ssi", $name, $email, $company_id];
+    public function registerTrainee($name, $email, $company_id, $stdid, $jobtitle, $branch) {
+        // الحصول على تاريخ التسجيل الحالي
+        $registration_date = date('Y-m-d H:i:s');
+    
+        // إعداد استعلام SQL لإدخال بيانات المتدرب مع الحقول الجديدة
+        $sql = "INSERT INTO trainees (name, email, company_id, stdid, jobtitle, branch, status, registration_date) 
+                VALUES (?, ?, ?, ?, ?, ?, 'غير معتمد', ?)";
+        $params = ["ssssssi", $name, $email, $company_id, $stdid, $jobtitle, $branch, $registration_date];
         $this->db->query($sql, $params);
     }
+    
 
     // دالة الحصول على المتدربين غير المعتمدين
     public function getPendingTrainees() {
@@ -29,48 +34,90 @@ class Trainee {
     }
 
     // دالة استبعاد متدرب
-    public function excludeTrainee($trainee_id, $reason, $status) {
-        $sql = "UPDATE trainees SET status = ?, reason_for_exclusion = ? WHERE id = ?";
-        $params = ["ssi", $status, $reason, $trainee_id];
+    public function excludeTrainee($trainee_id, $reason, $status,$date_of_ex) {
+        $sql = "UPDATE trainees SET status = ?, reason_for_exclusion = ?,date_of_ex =? WHERE id = ?";
+        $params = ["sssi", $status, $reason, $date_of_ex,$trainee_id];
         $this->db->query($sql, $params);
     }
 
     // دالة للحصول على المتدربين المعتمدين مصنفين حسب الشركة
-    public function getCurrentTraineesGroupedByCompany() {
-        $sql = "SELECT c.name AS company_name, t.name AS trainee_name 
+    public function getCurrentTraineesGroupedByCompany($companyId = null) {
+        // إعداد استعلام SQL لاسترجاع المتدربين مع المعلومات الجديدة
+        $sql = "SELECT c.name AS company_name,
+                       t.name AS trainee_name,
+                       t.email,
+                       t.stdid,
+                       t.jobtitle,
+                       t.branch,
+                       t.registration_date
                 FROM trainees t 
                 JOIN companies c ON t.company_id = c.id 
                 WHERE t.status = 'معتمد'";
-
-        $result = $this->db->query($sql);
-        $groupedTrainees = [];
-
-        foreach ($result as $row) {
-            $groupedTrainees[$row['company_name']][] = $row['trainee_name'];
+        
+        // إذا تم تمرير companyId، نضيف شرط للبحث في شركة معينة
+        if ($companyId) {
+            $sql .= " AND t.company_id = $companyId";
         }
-
-        return $groupedTrainees;
-    }
-
-    // دالة للحصول على المتدربين المستبعدين مصنفين حسب الشركة
-    public function getExcludedTraineesGroupedByCompany() {
-        $sql = "SELECT c.name AS company_name, t.name AS trainee_name, t.reason_for_exclusion 
-                FROM trainees t 
-                JOIN companies c ON t.company_id = c.id 
-                WHERE t.status = 'مستبعد'";
-
+    
+        // تنفيذ الاستعلام
         $result = $this->db->query($sql);
-        $groupedExcludedTrainees = [];
-
+        $groupedCurrentTrainees = [];
+    
+        // تنظيم البيانات حسب الشركة
         foreach ($result as $row) {
-            $groupedExcludedTrainees[$row['company_name']][] = [
+            $groupedCurrentTrainees[$row['company_name']][] = [
                 'name' => $row['trainee_name'],
-                'reason' => $row['reason_for_exclusion'],
+                'email' => $row['email'],
+                'stdid' => $row['stdid'],           // إضافة رقم الهوية
+                'jobtitle' => $row['jobtitle'],     // إضافة المسمى الوظيفي
+                'branch' => $row['branch'],         // إضافة الفرع
+                'registration_date' => $row['registration_date'] // إضافة تاريخ التسجيل
             ];
         }
-
+    
+        return $groupedCurrentTrainees;
+    }
+    
+    // دالة للحصول على المتدربين المستبعدين مصنفين حسب الشركة
+    public function getExcludedTraineesGroupedByCompany($company = null) {
+        // جملة SQL الأساسية للحصول على المتدربين المستبعدين أو المستقيلين
+        $sql = "SELECT c.name AS company_name,
+                    t.stdid,
+                       t.name AS trainee_name,
+                       t.reason_for_exclusion AS reason,
+                       t.email AS email,
+                       t.status AS status,
+                       t.date_of_ex
+                FROM trainees t
+                JOIN companies c ON t.company_id = c.id
+                WHERE t.status IN ('مستبعد', 'مستقيل')";
+    
+        // إضافة شرط تصفية حسب معرف الشركة إذا كان موجودًا
+        $params = [];
+        if ($company !== null) {
+            $sql .= " AND t.company_id = ?";
+            $params = ["i", $company];
+        }
+    
+        // تنفيذ الاستعلام
+        $result = $this->db->query($sql, $params);
+        $groupedExcludedTrainees = [];
+    
+        // تجميع النتائج حسب الشركة
+        foreach ($result as $row) {
+            $groupedExcludedTrainees[$row['company_name']][] = [
+                'stdid' => $row['stdid'],
+                'name' => $row['trainee_name'],
+                'reason' => $row['reason'],
+                'status' => $row['status'],
+                'email' => $row['email'],
+                'date_of_ex' => $row['date_of_ex'],
+            ];
+        }
+    
         return $groupedExcludedTrainees;
     }
+    
 
     // دالة للحصول على المتدربين المعتمدين
     public function getApprovedTrainees() {

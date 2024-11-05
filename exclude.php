@@ -1,5 +1,7 @@
 <?php
 include_once 'Trainee.php';
+include_once 'header.html';
+
 
 $trainee = new Trainee();
 
@@ -7,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $trainee_id = $_POST['trainee_id'];
     $reason = $_POST['reason'];
     $status = $_POST['status'];
-    $trainee->excludeTrainee($trainee_id, $reason, $status);
+    $date_of_ex = $_POST['date_of_ex'];
+    $trainee->excludeTrainee($trainee_id, $reason, $status,$date_of_ex);
     echo "تم تحديث حالة المتدرب بنجاح";
 }
 
@@ -19,7 +22,6 @@ $approvedTrainees = $trainee->getApprovedTrainees();
 <head>
     <meta charset="UTF-8">
     <title>إدارة الاستبعاد والاستقالة</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-5">
@@ -48,6 +50,7 @@ $approvedTrainees = $trainee->getApprovedTrainees();
                         </select>
                 </td>
                 <td><input type="text" name="reason" class="form-control" required></td>
+                <td><input type="hidden" name="date_of_ex" class="form-control" value="<?=date('Y-m-d H:i:s')?>"></td>
                 <td><button type="submit" class="btn btn-danger">تحديث</button></form></td>
             </tr>
             <?php endwhile; ?>

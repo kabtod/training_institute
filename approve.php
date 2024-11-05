@@ -1,4 +1,5 @@
 <?php
+include_once 'header.html';
 include_once 'Trainee.php';
 
 $trainee = new Trainee();
@@ -17,7 +18,6 @@ $pendingTrainees = $trainee->getPendingTrainees();
 <head>
     <meta charset="UTF-8">
     <title>اعتماد المتدربين</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container mt-5">

@@ -1,6 +1,7 @@
 <?php
 // الاتصال بقاعدة البيانات
 include 'db_connect.php';
+include 'header.html';
 
 $company_id = $_GET['company_id'];
 
