@@ -6,11 +6,26 @@ class Trainee {
     public function __construct() {
         $this->db = new Database();
     }
+    public function getAllTrainees() {
+        $sql = "
+            SELECT t.stdid, t.name, c.name AS company, t.status, t.email, t.phone 
+            FROM trainees t
+            LEFT JOIN companies c ON t.company_id = c.id
+        ";
+        $result = $this->db->query($sql);
+
+        $trainees = [];
+        while ($row = $result->fetch_assoc()) {
+            $trainees[] = $row;
+        }
+        
+        return $trainees;
+    }
 
     // دالة تسجيل متدرب
     public function registerTrainee($name, $email, $company_id, $stdid, $jobtitle, $branch) {
         // الحصول على تاريخ التسجيل الحالي
-        $registration_date = date('Y-m-d H:i:s');
+        $registration_date = date('Y-m-d');
     
         // إعداد استعلام SQL لإدخال بيانات المتدرب مع الحقول الجديدة
         $sql = "INSERT INTO trainees (name, email, company_id, stdid, jobtitle, branch, status, registration_date) 
@@ -123,6 +138,34 @@ class Trainee {
     public function getApprovedTrainees() {
         $sql = "SELECT * FROM trainees WHERE status = 'معتمد'";
         return $this->db->query($sql);
+    }
+
+
+    public function getTotalTraineesCount() {
+        $sql = "SELECT COUNT(*) AS total FROM trainees";
+        $result = $this->db->query($sql);
+        return $result->fetch_assoc()['total'];
+    }
+
+    // عدد المتدربين المعتمدين
+    public function getApprovedTraineesCount() {
+        $sql = "SELECT COUNT(*) AS total FROM trainees WHERE status = 'معتمد'";
+        $result = $this->db->query($sql);
+        return $result->fetch_assoc()['total'];
+    }
+
+    // عدد المتدربين غير المعتمدين
+    public function getUnapprovedTraineesCount() {
+        $sql = "SELECT COUNT(*) AS total FROM trainees WHERE status = 'غير معتمد'";
+        $result = $this->db->query($sql);
+        return $result->fetch_assoc()['total'];
+    }
+
+    // عدد المتدربين المستبعدين
+    public function getExcludedTraineesCount() {
+        $sql = "SELECT COUNT(*) AS total FROM trainees WHERE status = 'مستبعد'";
+        $result = $this->db->query($sql);
+        return $result->fetch_assoc()['total'];
     }
 
     // دالة للتخلص من الموارد

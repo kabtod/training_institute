@@ -94,6 +94,11 @@ foreach ($excludedTrainees as $company) {
                 <h2>عدد المتدربين المستبعدين</h2>
                 <p class="count"><?php echo $excludedCount; ?></p>
             </div>
+            <br>
+            <div class="statistics stat-card">
+                <a style="text-decoration: none; color:white; text-align:center;" href="dashboard.php"><h2>المزيد  </h2></a>
+                
+            </div>
         </div>
     </div>
 </body>

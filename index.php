@@ -1,5 +1,12 @@
+<?php
+session_start(); // التأكد من بدء الجلسة
+
+// للتحقق من وجود الصلاحيات المطلوبة، نفترض أن user_role يحوي الصلاحية مثل "admin" أو "trainer"
+$userRole = $_SESSION['user_role'] ?? 'guest'; // استخدام "guest" كإفتراضي لمن لم يسجل الدخول
+
+?>
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,9 +14,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .dashboard-header { background-color: #343a40; color: #fff; padding: 10px; text-align: center; }
-        .card { margin-bottom: 20px; }
+        .dashboard-header { background-color: #343a40; color: #fff; padding: 20px; text-align: center; }
+        .card { margin-bottom: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .container { padding-top: 30px; }
+        .card-body .fa { margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -77,7 +85,7 @@
                         <i class="fas fa-file-export fa-3x text-warning"></i>
                         <h5 class="card-title mt-3">تصدير التقارير</h5>
                         <p class="card-text">تصدير التقارير بتنسيق Excel لسهولة المشاركة</p>
-                        <a href="export.php" class="btn btn-warning btn-block">ابدأ</a>
+                        <a href="export_sheet.php" class="btn btn-warning btn-block">ابدأ</a>
                     </div>
                 </div>
             </div>
@@ -114,6 +122,20 @@
                         <h5 class="card-title mt-3">إدارة المستخدمين</h5>
                         <p class="card-text">إضافة وتعديل صلاحيات المستخدمين</p>
                         <a href="user_management.php" class="btn btn-primary btn-block">ابدأ</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- إدارة الشركات -->
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-building fa-3x text-primary"></i>
+                        <h5 class="card-title mt-3">إدارة الشركات</h5>
+                        <p class="card-text">إدارة بيانات الشركات المتعاقدة</p>
+                        <a href="company_management.php" class="btn btn-primary btn-block">ابدأ</a>
                     </div>
                 </div>
             </div>
