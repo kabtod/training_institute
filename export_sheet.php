@@ -20,6 +20,7 @@ $sql = "SELECT c.name AS company_name,
                t.reason_for_exclusion, 
                t.date_of_ex, 
                t.STDID, 
+               t.phone,
                t.JOBTITLE, 
                t.BRANCH 
         FROM trainees t 
@@ -33,6 +34,7 @@ $companyData = [];
 foreach ($result as $row) {
     $companyData[$row['company_name']][$row['status']][] = [
         'name' => $row['trainee_name'],
+        'phone' => $row['phone'],
         'email' => $row['email'],
         'status' => $row['status'],
         'date_of_ex' => $row['date_of_ex'],
@@ -83,6 +85,7 @@ foreach ($companyData as $companyName => $statuses) {
     // إعداد رؤوس الأعمدة
     $sheet->setCellValue('A1', 'رقم الهوية');
     $sheet->setCellValue('B1', 'اسم المتدرب');
+    $sheet->setCellValue('B1', 'رقم الجوال');
     $sheet->setCellValue('C1', 'البريد الإلكتروني');
     $sheet->setCellValue('D1', 'المسمى الوظيفي');
     $sheet->setCellValue('E1', 'الفرع');
@@ -103,6 +106,7 @@ foreach ($companyData as $companyName => $statuses) {
         foreach ($statuses['معتمد'] as $trainee) {
             $sheet->setCellValue("A$row", $trainee['id']);
             $sheet->setCellValue("B$row", $trainee['name']);
+            $sheet->setCellValue("B$row", $trainee['phone']);
             $sheet->setCellValue("C$row", $trainee['email']);
             $sheet->setCellValue("D$row", $trainee['jobtitle']);
             $sheet->setCellValue("E$row", $trainee['branch']);
@@ -131,6 +135,7 @@ foreach ($companyData as $companyName => $statuses) {
     // إعداد رؤوس الأعمدة للمستبعدين والمستقيلين
     $sheet->setCellValue("A$row", "رقم الهوية");
     $sheet->setCellValue("B$row", "الاسم");
+    $sheet->setCellValue("B$row", "رقم الجوال");
     $sheet->setCellValue("C$row", "البريد الإلكتروني");
     $sheet->setCellValue("D$row", "الحالة");
     $sheet->setCellValue("E$row", "السبب");
@@ -144,6 +149,7 @@ foreach ($companyData as $companyName => $statuses) {
             foreach ($statuses[$status] as $trainee) {
                 $sheet->setCellValue("A$row", $trainee['id']);
                 $sheet->setCellValue("B$row", $trainee['name']);
+                $sheet->setCellValue("B$row", $trainee['phone']);
                 $sheet->setCellValue("C$row", $trainee['email']);
                 $sheet->setCellValue("D$row", $trainee['status']);
                 $sheet->setCellValue("E$row", $trainee['reason']);
