@@ -252,7 +252,12 @@ class Trainee {
             echo "حدث خطأ أثناء استيراد البيانات: " . $e->getMessage();
         }
     }
-    
-    
+
+    public function searchAndFilterTrainees($searchQuery) {
+        $sql = "SELECT * FROM trainees WHERE status = 'معتمد' AND name LIKE ?";
+        $params = ["s", "%" . $searchQuery . "%"];
+        
+        return $this->db->query($sql, $params);
+    }
 }
 ?>
