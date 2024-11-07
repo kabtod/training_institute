@@ -87,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <option value="معتمد" <?= $trainee['status'] === 'معتمد' ? 'selected' : '' ?>>معتمد</option>
                                 <option value="غير معتمد" <?= $trainee['status'] === 'غير معتمد' ? 'selected' : '' ?>>غير معتمد</option>
                                 <option value="مستبعد" <?= $trainee['status'] === 'مستبعد' ? 'selected' : '' ?>>مستبعد</option>
+                                <option value="مستقيل" <?= $trainee['status'] === 'مستقيل' ? 'selected' : '' ?>>مستقيل</option>
                             </select>
                         </td>
                         <td>

@@ -21,6 +21,7 @@ $totalTrainees = $trainee->getTotalTraineesCount();
 $approvedTrainees = $trainee->getApprovedTraineesCount();
 $unapprovedTrainees = $trainee->getUnapprovedTraineesCount();
 $excludedTrainees = $trainee->getExcludedTraineesCount();
+$excludedTrainees2 = $trainee->getExcludedTraineesCount2();
 $totalCompanies = $company->getTotalCompaniesCount();
 
 ?>
@@ -71,6 +72,12 @@ $totalCompanies = $company->getTotalCompaniesCount();
             <div class="card bg-danger text-white p-3">
                 <h5 class="card-title">المتدربون المستبعدين</h5>
                 <p class="card-text fs-4"><?= $excludedTrainees ?></p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-danger text-white p-3">
+                <h5 class="card-title">المتدربون المستقيلين</h5>
+                <p class="card-text fs-4"><?= $excludedTrainees2 ?></p>
             </div>
         </div>
         <div class="col-md-4">

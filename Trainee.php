@@ -1,5 +1,10 @@
 <?php 
+require 'vendor/autoload.php';
+
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 include_once 'Database.php';
+
 class Trainee {
     private $db;
 
@@ -167,10 +172,87 @@ class Trainee {
         $result = $this->db->query($sql);
         return $result->fetch_assoc()['total'];
     }
+    // عدد المتدربين المستقيلين
+    public function getExcludedTraineesCount2() {
+        $sql = "SELECT COUNT(*) AS total FROM trainees WHERE status = 'مستقيل'";
+        $result = $this->db->query($sql);
+        return $result->fetch_assoc()['total'];
+    }
 
     // دالة للتخلص من الموارد
     public function __destruct() {
         $this->db->close();
     }
+
+
+    public function updateTrainee($id, $name, $companyId, $status, $email, $phone) {
+        $sql = "UPDATE trainees SET name = ?, company_id = ?, status = ?, email = ?, phone = ? WHERE stdid = ?";
+        $params = ["ssisii", $name, $companyId, $status, $email, $phone, $id]; // تحديد أنواع البيانات
+        
+        $this->db->query($sql, $params);
+    }
+
+
+    public function importFromExcel($filePath) {
+        try {
+            // تحميل ملف Excel
+            $spreadsheet = IOFactory::load($filePath);
+            $sheet = $spreadsheet->getActiveSheet();
+            $rows = $sheet->toArray();
+
+            // التأكد من وجود بيانات
+            if (count($rows) <= 1) {
+                echo "لا توجد بيانات لاستيرادها.";
+                return;
+            }
+
+            // الاستعلام لإضافة بيانات المتدربين
+            $sql = "INSERT INTO trainees 
+                    (stdid, name, phone, phone2, jobtitle, jobid, qualif, branch, email, company_id, status, totaltime, registration_date, note)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            // البدء من الصف الثاني لتخطي رؤوس الأعمدة
+            for ($i = 1; $i < count($rows); $i++) {
+                $row = $rows[$i];
+
+                // استخراج البيانات من كل عمود والتحقق من القيم الفارغة
+                $stdid = !empty($row[0]) ? $row[0] : null;
+                $name = !empty($row[1]) ? $row[1] : null;
+                $phone = !empty($row[2]) ? $row[2] : null;
+                $phone2 = !empty($row[3]) ? $row[3] : null;
+                $jobtitle = !empty($row[4]) ? $row[4] : null;
+                $jobid = !empty($row[5]) ? $row[5] : null;
+                $qualif = !empty($row[6]) ? $row[6] : null;
+                $branch = !empty($row[7]) ? $row[7] : null;
+                $email = !empty($row[8]) ? $row[8] : null;
+                $company_id = !empty($row[9]) ? $row[9] : null;
+                $status = !empty($row[10]) ? $row[10] : null;
+                $totaltime = !empty($row[11]) ? $row[11] : null;
+                $registration_date = !empty($row[12]) ? $row[12] : null;
+                $note = !empty($row[13]) ? $row[13] : null;
+
+                // التحقق من أن جميع القيم موجودة قبل إدخالها
+                if (is_null($stdid) || is_null($name) || is_null($email)) {
+                    echo "توجد بيانات ناقصة في الصف رقم " . ($i + 1) . ". تم تجاهل هذا الصف.<br>";
+                    continue;
+                }
+
+                // إعداد المعلمات للاستعلام
+                $params = [
+                    'isssssssssssss', // نوع البيانات لكل قيمة
+                    $stdid, $name, $phone, $phone2, $jobtitle, $jobid, $qualif, $branch, $email, $company_id, $status, $totaltime, $registration_date, $note
+                ];
+
+                // تنفيذ الاستعلام باستخدام دالة query في Database
+                $this->db->query($sql, $params);
+            }
+
+            echo "تم استيراد البيانات بنجاح!";
+        } catch (Exception $e) {
+            echo "حدث خطأ أثناء استيراد البيانات: " . $e->getMessage();
+        }
+    }
+    
+    
 }
 ?>

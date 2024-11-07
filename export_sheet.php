@@ -21,8 +21,13 @@ $sql = "SELECT c.name AS company_name,
                t.date_of_ex, 
                t.STDID, 
                t.phone,
+               t.phone2,
                t.JOBTITLE, 
-               t.BRANCH 
+               t.BRANCH, 
+               t.jobid, 
+               t.totaltime, 
+               t.qualif, 
+               t.note
         FROM trainees t 
         JOIN companies c ON t.company_id = c.id 
         ORDER BY c.name, FIELD(t.status, 'معتمد', 'مستبعد', 'مستقيل')";
@@ -39,9 +44,14 @@ foreach ($result as $row) {
         'status' => $row['status'],
         'date_of_ex' => $row['date_of_ex'],
         'reason' => $row['reason_for_exclusion'] ?? '',
-        'id' => $row['STDID'],
+        'stdid' => $row['STDID'],
+        'jobid' => $row['jobid'],
         'jobtitle' => $row['JOBTITLE'],
+        'totaltime' => $row['totaltime'],
+        'qualif' => $row['qualif'],
+        'phone2' => $row['phone2'],
         'branch' => $row['BRANCH'],
+        'note' => $row['note'],
     ];
 }
 
@@ -83,17 +93,22 @@ foreach ($companyData as $companyName => $statuses) {
     ];
 
     // إعداد رؤوس الأعمدة
-    $sheet->setCellValue('A1', 'رقم الهوية');
-    $sheet->setCellValue('B1', 'اسم المتدرب');
-    $sheet->setCellValue('B1', 'رقم الجوال');
-    $sheet->setCellValue('C1', 'البريد الإلكتروني');
-    $sheet->setCellValue('D1', 'المسمى الوظيفي');
-    $sheet->setCellValue('E1', 'الفرع');
-    $sheet->setCellValue('F1', 'الحالة');
-    $sheet->getStyle('A1:F1')->applyFromArray($headerStyle);
+    $sheet->setCellValue('A1', 'م');
+    $sheet->setCellValue('B1', ' الاسم');
+    $sheet->setCellValue('C1', 'رقم الاحوال ');
+    $sheet->setCellValue('D1', 'رقم الجوال');
+    $sheet->setCellValue('E1', 'رقم الجوال2');
+    $sheet->setCellValue('F1', 'الرقم الوظيفي');
+    $sheet->setCellValue('G1', 'المسمى الوظيفي');
+    $sheet->setCellValue('H1', 'المؤهل');
+    $sheet->setCellValue('I1', 'مكان التدريب ');
+    $sheet->setCellValue('J1', 'مدة العقد ');
+    $sheet->setCellValue('K1', ' تاريخ توثيق العقد ');
+    $sheet->setCellValue('L1', 'ملاحظات');
+    $sheet->getStyle('A1:L1')->applyFromArray($headerStyle);
 
     // جعل عرض الحقول احتوائيًا
-    foreach (range('A', 'F') as $columnID) {
+    foreach (range('A', 'L') as $columnID) {
         $sheet->getColumnDimension($columnID)->setAutoSize(true);
     }
 
@@ -102,15 +117,21 @@ foreach ($companyData as $companyName => $statuses) {
 
     // إدخال بيانات المتدربين المعتمدين
     $row = 2;
+    $i=1;
     if (isset($statuses['معتمد'])) {
         foreach ($statuses['معتمد'] as $trainee) {
-            $sheet->setCellValue("A$row", $trainee['id']);
+            $sheet->setCellValue("A$row", $i++);
             $sheet->setCellValue("B$row", $trainee['name']);
-            $sheet->setCellValue("B$row", $trainee['phone']);
-            $sheet->setCellValue("C$row", $trainee['email']);
-            $sheet->setCellValue("D$row", $trainee['jobtitle']);
-            $sheet->setCellValue("E$row", $trainee['branch']);
-            $sheet->setCellValue("F$row", $trainee['status']);
+            $sheet->setCellValue("C$row", $trainee['stdid']);
+            $sheet->setCellValue("D$row", $trainee['phone']);
+            $sheet->setCellValue("E$row", $trainee['phone2']);
+            $sheet->setCellValue("F$row", $trainee['jobid']);
+            $sheet->setCellValue("G$row", $trainee['jobtitle']);
+            $sheet->setCellValue("H$row", $trainee['qualif']);
+            $sheet->setCellValue("I$row", $trainee['branch']);
+            $sheet->setCellValue("J$row", $trainee['totaltime']);
+            $sheet->setCellValue("K$row", $trainee['date_of_ex']);
+            $sheet->setCellValue("L$row", $trainee['note']);
             $row++;
         }
     }
@@ -147,7 +168,7 @@ foreach ($companyData as $companyName => $statuses) {
     foreach (['مستبعد', 'مستقيل'] as $status) {
         if (isset($statuses[$status])) {
             foreach ($statuses[$status] as $trainee) {
-                $sheet->setCellValue("A$row", $trainee['id']);
+                $sheet->setCellValue("A$row", $trainee['stdid']);
                 $sheet->setCellValue("B$row", $trainee['name']);
                 $sheet->setCellValue("B$row", $trainee['phone']);
                 $sheet->setCellValue("C$row", $trainee['email']);

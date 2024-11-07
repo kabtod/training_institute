@@ -38,16 +38,30 @@ $companies = $company->getAllCompanies();
 ?>
 
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <title>إدارة الشركات</title>
-    <link rel="stylesheet" href="styles.css">
+    <!-- <link rel="stylesheet" href="styles.css"> -->
 </head>
 <body>
 <div class="container">
     <h2>إدارة الشركات</h2>
     
+    <!-- نموذج إضافة شركة جديدة -->
+    <h3>إضافة شركة جديدة</h3>
+    <form action="company_management.php" method="POST">
+        <div class="form-group">
+            <label for="name">اسم الشركة</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="location">الموقع</label>
+            <input type="text" id="location" name="location" required>
+        </div>
+        <button type="submit" name="add_company" class="btn btn-primary">إضافة</button>
+    </form>
+
     <!-- عرض الشركات في جدول -->
     <table class="table">
         <thead>
@@ -76,20 +90,6 @@ $companies = $company->getAllCompanies();
             <?php endforeach; ?>
         </tbody>
     </table>
-
-    <!-- نموذج إضافة شركة جديدة -->
-    <h3>إضافة شركة جديدة</h3>
-    <form action="company_management.php" method="POST">
-        <div class="form-group">
-            <label for="name">اسم الشركة</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
-            <label for="location">الموقع</label>
-            <input type="text" id="location" name="location" required>
-        </div>
-        <button type="submit" name="add_company" class="btn btn-primary">إضافة</button>
-    </form>
 
     <!-- نموذج تعديل شركة -->
     <div id="editCompanyModal" class="modal">
